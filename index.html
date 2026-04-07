@@ -106,7 +106,7 @@
                     content: [
                         { 
                             title: "عَلَم؟ صرف؟", 
-                            text: "<ul class='text-right list-none space-y-2 w-max max-w-full mx-auto font-medium'><li>- العَلَم: اسم يدل على إنسان معين أو بلد معين أو...</li><li>- الصرف: التنوين.</li></ul>", 
+                            text: "<ul class='text-right list-none space-y-2 w-max max-w-full mx-auto font-medium'><li>- العَلَم: اسم يدل على إنسان معين أو بلد معين أو...</li><li>- الصرف: التنوين</li></ul>", 
                             theme: "blue",
                             icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-10 h-10 text-blue-500"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>`
                         },
@@ -171,10 +171,10 @@
                     theme: "emerald",
                     description: "قم بتصنيف الأعلام الممنوعة من الصرف الآتية بوضعها في الصندوق الذي يمثل سبب منعها.",
                     categories: [
-                        { id: 'cat_verb', label: 'وزن الفعل', theme: 'emerald' },
-                        { id: 'cat_foreign', label: 'علم أعجمي', theme: 'amber' },
+                        { id: 'cat_verb', label: 'علم على وزن الفعل', theme: 'emerald' },
+                        { id: 'cat_foreign', label: 'علم أعجمي', theme: 'cyan' },
                         { id: 'cat_fem', label: 'علم مؤنث', theme: 'sky' },
-                        { id: 'cat_an', label: 'ينتهي بـ (ان) زائدتين', theme: 'violet' }
+                        { id: 'cat_an', label: 'علم ينتهي بـ (ان) زائدتين', theme: 'violet' }
                     ],
                     questions: [
                         { text: 'أكرم', categoryId: 'cat_verb', explanation: 'صيغته تتوافق مع الأوزان الفعلية.', hint: 'يأتي على هيئة الفعل المضارع.' },
@@ -191,8 +191,8 @@
                     id: "test_error_correction",
                     type: "error_correction",
                     title: "المحقق النحوي",
-                    theme: "amber",
-                    description: "اقرأ الجملة بتركيز، ثم اختر الكلمة المكتوبة بخطأ نحوي أولاً، واختر التصويب الصحيح لها من الخيارات التي ستظهر.",
+                    theme: "cyan",
+                    description: "اقرأ الجملة بتركيز، انقر على الكلمة المكتوبة بخطأ نحوي أولاً، ثم اختر التصويب الصحيح لها من الخيارات التي ستظهر.",
                     questions: [
                         { 
                             text: "أثنى المعلمُ على أكرمٍ لجهده.", 
@@ -210,7 +210,7 @@
                             options: ["مدريدًا", "مدريدِ", "مدريدَ"],
                             correctOptionIndex: 2,
                             hint: "اسم البلد الأجنبي لا يقبل التنوين، وما علامة جره؟", 
-                            explanation: "الوجه النحوي الدقيق (مدريدَ) لأنها علم أعجمي ممنوع من الصرف، وتُجر بالفتحة." 
+                            explanation: "الوجه النحوي الصحيح (مدريدَ) لأنها علم أعجمي ممنوع من الصرف، وتُجر بالفتحة." 
                         },
                         { 
                             text: "قرأتُ ديوانًا لـ سلمانِ.", 
@@ -272,7 +272,7 @@
                     id: "test_mcq",
                     type: "mcq",
                     title: "تحدي الأبطال",
-                    theme: "blue",
+                    theme: "teal",
                     description: "اختبر معلوماتك العامة والدقيقة في قاعدة العلم الممنوع من الصرف.",
                     questions: [
                         { text: "ما القاعدة الذهبية للممنوع من الصرف؟", options: ['يُنون ويُجر بالكسرة', 'لا يُنون ويُجر بالفتحة', 'يُجر بالياء ولا يُنون'], correct: 1, hint: 'الفتحة بديلة عن الكسرة.', explanation: 'الممنوع من الصرف لا يقبل التنوين، ويُجر بالفتحة نيابة عن الكسرة.' },
@@ -486,7 +486,7 @@
                 if (sectionData.description) {
                     headerHTML += `
                         <div class="text-center mb-8 fade-in">
-                            <p class="text-lg md:text-xl text-${sectionData.theme}-800 font-semibold bg-${sectionData.theme}-50 p-4 md:p-5 rounded-2xl border border-${sectionData.theme}-200 shadow-sm inline-block w-full">
+                            <p class="text-lg md:text-xl text-${sectionData.theme}-800 font-semibold bg-${sectionData.theme}-50 p-4 md:p-5 rounded-2xl shadow-sm inline-block w-full">
                                 ${sectionData.description}
                             </p>
                         </div>
@@ -529,7 +529,7 @@
                 if (sectionData.description) {
                     html += `
                         <div class="text-center mb-8">
-                            <p class="text-lg md:text-xl text-${sectionData.theme}-800 font-semibold bg-${sectionData.theme}-50 p-4 md:p-5 rounded-2xl border border-${sectionData.theme}-200 shadow-sm inline-block w-full">
+                            <p class="text-lg md:text-xl text-${sectionData.theme}-800 font-semibold bg-${sectionData.theme}-50 p-4 md:p-5 rounded-2xl shadow-sm inline-block w-full">
                                 ${sectionData.description}
                             </p>
                         </div>
@@ -581,9 +581,9 @@
                         btnClass += " cursor-default";
                     }
 
-                    let numClass = `w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-full text-xl md:text-2xl font-bold shrink-0 transition-colors `;
-                    if (answered) numClass += opt.isCorrect ? 'bg-emerald-200 text-emerald-800' : (selectedOption === opt ? 'bg-rose-200 text-rose-800' : 'bg-slate-200 text-slate-500');
-                    else numClass += `bg-${theme}-50 text-${theme}-500`;
+                    let numClass = `w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-full text-xl md:text-2xl font-bold shrink-0 transition-all `;
+                    if (answered) numClass += opt.isCorrect ? 'bg-white text-emerald-600 shadow-md ring-2 ring-emerald-100' : (selectedOption === opt ? 'bg-white text-rose-600 shadow-md ring-2 ring-rose-100' : 'bg-slate-100 text-slate-400 border border-slate-200');
+                    else numClass += `bg-white text-${theme}-600 shadow-md border border-slate-100`;
                     let numberingHTML = `<div class="${numClass}">${toArabicNum(optIdx + 1)}</div>`;
 
                     optionsHTML += `
@@ -648,7 +648,7 @@
                 if (sectionData.description) {
                     html += `
                         <div class="text-center w-full">
-                            <p class="text-lg md:text-xl text-${theme}-800 font-semibold bg-${theme}-50 p-4 md:p-5 rounded-2xl border border-${theme}-200 shadow-sm">
+                            <p class="text-lg md:text-xl text-${theme}-800 font-semibold bg-${theme}-50 p-4 md:p-5 rounded-2xl shadow-sm">
                                 ${sectionData.description}
                             </p>
                         </div>
@@ -748,7 +748,7 @@
                 if (sectionData.description) {
                     html += `
                         <div class="text-center mb-8">
-                            <p class="text-lg md:text-xl text-${sectionData.theme}-800 font-semibold bg-${sectionData.theme}-50 p-4 md:p-5 rounded-2xl border border-${sectionData.theme}-200 shadow-sm inline-block w-full">
+                            <p class="text-lg md:text-xl text-${sectionData.theme}-800 font-semibold bg-${sectionData.theme}-50 p-4 md:p-5 rounded-2xl shadow-sm inline-block w-full">
                                 ${sectionData.description}
                             </p>
                         </div>
@@ -888,7 +888,7 @@
                 if (sectionData.description) {
                     html += `
                         <div class="text-center w-full">
-                            <p class="text-lg md:text-xl text-${theme}-800 font-semibold bg-${theme}-50 p-4 md:p-5 rounded-2xl border border-${theme}-200 shadow-sm">
+                            <p class="text-lg md:text-xl text-${theme}-800 font-semibold bg-${theme}-50 p-4 md:p-5 rounded-2xl shadow-sm">
                                 ${sectionData.description}
                             </p>
                         </div>
@@ -1008,7 +1008,7 @@
                 if (sectionData.description) {
                     html += `
                         <div class="text-center w-full">
-                            <p class="text-lg md:text-xl text-${theme}-800 font-semibold bg-${theme}-50 p-4 md:p-5 rounded-2xl border border-${theme}-200 shadow-sm">
+                            <p class="text-lg md:text-xl text-${theme}-800 font-semibold bg-${theme}-50 p-4 md:p-5 rounded-2xl shadow-sm">
                                 ${sectionData.description}
                             </p>
                         </div>
