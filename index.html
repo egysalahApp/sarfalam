@@ -99,10 +99,10 @@
                     theme: "sky",
                     description: "تعرف على رحلة حافلة التنوين، وما الممنوع من الصرف باختصار.",
                     content: [
-                        { title: "عَلَم؟ صرف؟", text: "<p class='mb-3 leading-loose'><strong>العَلَم:</strong> اسم يدل على إنسان معين أو بلد معين أو...</p><p class='leading-loose'><strong>الصرف:</strong> هو التنوين.</p>", theme: "indigo", icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8 md:w-10 md:h-10 text-indigo-500"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>` },
-                        { title: "الاسم المصروف", text: "<p class='mb-3 leading-loose'>الاسم المصروف هو الاسم الذي يقبل التنوين بحرية.</p><p class='leading-loose'>مثل: جاء محمدٌ، رأيتُ محمّدًا، مررتُ بمحمدٍ.</p>", theme: "emerald", icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8 md:w-10 md:h-10 text-emerald-500"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>` },
-                        { title: "ما الممنوع من الصرف؟", text: "<p class='mb-3 leading-loose'>اسم يرفض التنوين، وعلامة جره الفتحة نيابة عن الكسرة!</p><p class='leading-loose'>مثل: مررتُ بـ <strong>عُمرَ</strong>.</p>", theme: "amber", icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8 md:w-10 md:h-10 text-amber-500"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>` },
-                        { title: "أسباب منع العَلَم", text: "<p class='mb-3 leading-loose text-center font-bold'>يُمنع العَلَم من الصرف إذا كان:</p><ul class='text-right list-none space-y-2 w-max max-w-full mx-auto font-medium'><li>- مؤنثًا</li><li>- أو على وزن الفعل</li><li>- أو على وزن (فُعَل)</li><li>- أو ينتهي بـ (ألف ونون) زائدتين</li><li>- أو أعجميًا</li><li>- أو مركبًا تركيبًا مزجيًا.</li></ul>", theme: "violet", icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8 md:w-10 md:h-10 text-violet-500"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect></svg>` }
+                        { title: "عَلَم؟ صرف؟", desc: "<strong>العَلَم:</strong> اسم يدل على إنسان معين أو بلد معين أو...", examples: "<strong>الصرف:</strong> هو التنوين.", theme: "indigo", icon: "🏷️" },
+                        { title: "الاسم المصروف", desc: "الاسم المصروف هو الاسم الذي يقبل التنوين بحرية.", examples: "مثل: جاء محمدٌ، رأيتُ محمّدًا، مررتُ بمحمدٍ.", theme: "emerald", icon: "✅" },
+                        { title: "ما الممنوع من الصرف؟", desc: "اسم يرفض التنوين، وعلامة جره الفتحة نيابة عن الكسرة!", examples: "مثل: مررتُ بـ <strong>عُمرَ</strong>.", theme: "amber", icon: "⛔" },
+                        { title: "أسباب منع العَلَم", desc: "يُمنع العَلَم من الصرف إذا كان:", examples: "<ul class='text-right list-none space-y-2 w-max max-w-full mx-auto'><li>- مؤنثًا</li><li>- أو على وزن الفعل</li><li>- أو على وزن (فُعَل)</li><li>- أو ينتهي بـ (ألف ونون) زائدتين</li><li>- أو أعجميًا</li><li>- أو مركبًا تركيبًا مزجيًا.</li></ul>", theme: "violet", icon: "🧩" }
                     ]
                 },
                 {
@@ -183,7 +183,7 @@
                     id: "test_mcq",
                     type: "mcq",
                     title: "تحدي الأبطال",
-                    theme: "teal",
+                    theme: "blue",
                     description: "اختبر معلوماتك العامة والدقيقة في قاعدة العلم الممنوع من الصرف.",
                     questions: [
                         { text: "ما القاعدة الذهبية للممنوع من الصرف؟", options: ['يُنون ويُجر بالكسرة', 'لا يُنون ويُجر بالفتحة', 'يُجر بالياء ولا يُنون'], correct: 1, hint: 'الفتحة بديلة عن الكسرة.', explanation: 'الممنوع من الصرف لا يقبل التنوين، ويُجر بالفتحة نيابة عن الكسرة.' },
@@ -347,7 +347,7 @@
                     gridHTML += `
                     <div class="bg-white p-6 md:p-8 rounded-[2rem] border-2 border-${block.theme}-200 hover:-translate-y-2 hover:shadow-xl transition-all duration-300 flex flex-col items-center gap-5 group cursor-default text-center shadow-sm">
                         
-                        <div class="w-16 h-16 md:w-20 md:h-20 bg-${block.theme}-100 rounded-full flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-300">
+                        <div class="w-16 h-16 md:w-20 md:h-20 bg-${block.theme}-100 rounded-full flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-300 text-3xl md:text-4xl">
                             ${block.icon}
                         </div>
                         
@@ -355,9 +355,13 @@
                             ${block.title}
                         </h3>
                         
-                        <div class="mt-auto w-full flex-grow flex flex-col justify-center">
-                            <div class="text-base md:text-lg font-medium text-slate-800 bg-${block.theme}-50 p-5 rounded-2xl border border-${block.theme}-200 flex-grow shadow-sm w-full">
-                                ${block.text}
+                        <div class="text-lg md:text-xl font-medium text-slate-600 leading-relaxed w-full">
+                            ${block.desc}
+                        </div>
+                        
+                        <div class="mt-auto w-full pt-2 flex-grow flex flex-col justify-end">
+                            <div class="bg-${block.theme}-50/80 p-5 rounded-2xl w-full text-${block.theme}-900 text-lg md:text-xl leading-relaxed font-bold">
+                                ${block.examples}
                             </div>
                         </div>
                         
@@ -372,7 +376,7 @@
                 const isComplete = progress.total > 0 && progress.answered === progress.total;
                 const questions = this.state.sectionData[sectionId];
                 let html = '<div class="fade-in">';
-                if (sectionData.description) { html += `<div class="text-center mb-8"><p class="text-lg md:text-xl text-${sectionData.theme}-800 font-semibold bg-${sectionData.theme}-50 p-4 md:p-5 rounded-2xl shadow-sm inline-block w-full">${sectionData.description}</p></div>`; }
+                if (sectionData.description) { html += `<div class="text-center mb-8"><p class="text-lg md:text-xl text-${sectionData.theme}-800 font-semibold bg-${sectionData.theme}-50/60 p-4 md:p-5 rounded-2xl shadow-sm inline-block w-full">${sectionData.description}</p></div>`; }
                 questions.forEach((qState, idx) => { html += `<div id="${sectionId}-wrapper-${idx}">${this.renderQuestionCard(qState, idx, sectionId, sectionData.theme, sectionData.type)}</div>`; });
                 if (isComplete) { html += `<div class="mt-12 p-8 md:p-10 bg-white border-2 border-${sectionData.theme}-200 rounded-2xl shadow-sm text-center max-w-2xl mx-auto w-full"><h3 class="text-2xl md:text-3xl font-semibold text-slate-700 mb-6">نتيجتك في قسم (${sectionData.title})</h3><div class="text-4xl md:text-5xl font-bold text-${sectionData.theme}-600 flex items-center justify-center gap-3"><span>${toArabicNum(progress.score)}</span><span class="text-2xl md:text-3xl text-slate-400 font-medium mt-1">من</span><span>${toArabicNum(progress.total)}</span></div></div>`; }
                 html += '</div>'; html += this.renderSectionFooterControls(sectionId, isComplete); return html;
@@ -403,7 +407,7 @@
             renderSort(sectionData) {
                 const sectionId = sectionData.id; const theme = sectionData.theme; const state = this.state.sectionData[sectionId]; const { questions, currentIndex, status, animatingOut } = state; const isComplete = currentIndex >= questions.length;
                 let html = '<div class="flex flex-col items-center w-full gap-6 fade-in">';
-                if (sectionData.description) { html += `<div class="text-center w-full"><p class="text-lg md:text-xl text-${theme}-800 font-semibold bg-${theme}-50 p-4 md:p-5 rounded-2xl shadow-sm">${sectionData.description}</p></div>`; }
+                if (sectionData.description) { html += `<div class="text-center w-full"><p class="text-lg md:text-xl text-${theme}-800 font-semibold bg-${theme}-50/60 p-4 md:p-5 rounded-2xl shadow-sm">${sectionData.description}</p></div>`; }
                 let boxesHTML = ''; if (!isComplete) {
                     const colors = ['emerald', 'violet', 'amber', 'blue', 'indigo'];
                     state.questions[currentIndex].options.forEach((opt, idx) => {
@@ -419,7 +423,7 @@
             renderErrorCorrection(sectionData) {
                 const sectionId = sectionData.id; const progress = this.state.progress[sectionId]; const isComplete = progress.total > 0 && progress.answered === progress.total; const questions = this.state.sectionData[sectionId];
                 let html = '<div class="fade-in">';
-                if (sectionData.description) { html += `<div class="text-center mb-8"><p class="text-lg md:text-xl text-${sectionData.theme}-800 font-semibold bg-${sectionData.theme}-50 p-4 md:p-5 rounded-2xl shadow-sm inline-block w-full">${sectionData.description}</p></div>`; }
+                if (sectionData.description) { html += `<div class="text-center mb-8"><p class="text-lg md:text-xl text-${sectionData.theme}-800 font-semibold bg-${sectionData.theme}-50/60 p-4 md:p-5 rounded-2xl shadow-sm inline-block w-full">${sectionData.description}</p></div>`; }
                 questions.forEach((qState, idx) => { html += `<div id="${sectionId}-wrapper-${idx}">${this.renderErrorCard(qState, idx, sectionData.theme, sectionId)}</div>`; });
                 if (isComplete) { html += `<div class="mt-12 p-8 md:p-10 bg-white border-2 border-${sectionData.theme}-200 rounded-2xl shadow-sm text-center max-w-2xl mx-auto w-full"><h3 class="text-2xl md:text-3xl font-semibold text-slate-700 mb-6">نتيجتك في قسم (${sectionData.title})</h3><div class="text-4xl md:text-5xl font-bold text-${sectionData.theme}-600 flex items-center justify-center gap-3"><span>${toArabicNum(progress.score)}</span><span class="text-2xl md:text-3xl text-slate-400 font-medium mt-1">من</span><span>${toArabicNum(progress.total)}</span></div></div>`; }
                 html += '</div>'; html += this.renderSectionFooterControls(sectionId, isComplete); return html;
@@ -463,11 +467,15 @@
                 let html = ''; const currentQState = isComplete ? null : questions[currentIndex]; const currentQuestion = isComplete ? null : currentQState.originalQuestion; const showHint = isComplete ? false : currentQState.showHint; const hintFadeClass = (currentQState && currentQState.hintAnimate) ? 'smooth-expand' : ''; const shakeClass = status === 'incorrect' ? 'shake' : '';
                 let boxesHTML = ''; sectionData.categories.forEach(cat => {
                     const boxTheme = cat.theme || 'blue'; 
-                    const placedHtml = placedItems[cat.id].map(item => `<div class="mt-2 p-3 md:p-4 rounded-xl text-xl md:text-2xl font-bold bg-${boxTheme}-50/80 shadow-sm leading-snug fade-in text-center text-${boxTheme}-900 relative z-10">${item.text}</div>`).join('');
-                    let boxClass = `relative overflow-hidden flex flex-col w-full p-5 md:p-6 rounded-[2rem] bg-white shadow-xl shadow-${boxTheme}-100/50 transition-all duration-500 min-h-[12rem] `;
-                    if (!isComplete && status !== 'correct' && !animatingOut) { boxClass += `cursor-pointer hover:-translate-y-2 hover:shadow-2xl hover:shadow-${boxTheme}-200/60 active:scale-[0.98]`; } else { boxClass += `cursor-default`; }
-                    const smallTrayIcon = ICONS.tray.replace('w-8 h-8 md:w-12 md:h-12 mb-2', 'w-5 h-5 md:w-6 md:h-6 shrink-0');
-                    boxesHTML += `<div ${(!isComplete && status !== 'correct' && !animatingOut) ? `onclick="App.handleClassifyClick('${sectionId}', '${cat.id}')"` : ''} class="${boxClass}"><div class="absolute -bottom-6 -right-6 w-32 h-32 bg-${boxTheme}-50 rounded-full blur-2xl opacity-60 pointer-events-none z-0"></div><div class="flex justify-center relative z-10 mb-4"><div class="bg-${boxTheme}-100/70 text-${boxTheme}-800 px-5 py-2.5 rounded-full backdrop-blur-sm flex items-center justify-center gap-2 font-bold text-base md:text-lg shadow-sm">${smallTrayIcon}<span>${cat.label}</span></div></div><div class="flex flex-col gap-2 flex-grow relative z-10">${placedHtml}</div></div>`;
+                    const placedHtml = placedItems[cat.id].map(item => `<div class="mt-2 p-3 md:p-4 rounded-xl text-xl md:text-2xl font-bold bg-white border-r-4 border-${boxTheme}-400 shadow-md leading-snug fade-in text-center text-slate-800 relative z-10">${item.text}</div>`).join('');
+                    
+                    let boxClass = `relative overflow-hidden flex flex-col w-full p-5 md:p-6 rounded-[2.5rem] bg-white/50 backdrop-blur-sm border-2 border-slate-300 shadow-[inset_0_2px_8px_rgba(0,0,0,0.03)] transition-all duration-300 min-h-[12rem] `;
+                    if (!isComplete && status !== 'correct' && !animatingOut) { boxClass += `cursor-pointer hover:bg-white/80 hover:border-slate-400 hover:shadow-lg active:scale-[0.98]`; } else { boxClass += `cursor-default`; }
+                    
+                    const smallTrayIcon = ICONS.tray.replace('w-8 h-8 md:w-12 md:h-12 mb-2 opacity-80', 'w-6 h-6 md:w-7 md:h-7 shrink-0');
+                    const watermarkIcon = ICONS.tray.replace('w-8 h-8 md:w-12 md:h-12 mb-2 opacity-80', 'w-32 h-32');
+                    
+                    boxesHTML += `<div ${(!isComplete && status !== 'correct' && !animatingOut) ? `onclick="App.handleClassifyClick('${sectionId}', '${cat.id}')"` : ''} class="${boxClass}"><div class="absolute top-0 left-0 w-full h-2 bg-${boxTheme}-400 opacity-60 z-10"></div><div class="absolute -bottom-10 -left-10 text-${boxTheme}-200 opacity-10 transform -rotate-12 scale-150 pointer-events-none z-0">${watermarkIcon}</div><div class="flex items-center justify-center gap-3 relative z-10 mb-3"><div class="bg-white shadow-sm p-2 rounded-full flex items-center justify-center text-${boxTheme}-500">${smallTrayIcon}</div><h3 class="font-bold text-xl md:text-2xl text-slate-900 m-0">${cat.label}</h3></div><div class="w-2/3 h-px bg-slate-300 mx-auto mb-4 relative z-10"></div><div class="flex flex-col gap-2 flex-grow relative z-10">${placedHtml}</div></div>`;
                 });
                 html += `<div class="flex flex-col items-center w-full gap-6 fade-in">`;
                 if (sectionData.description) { html += `<div class="text-center w-full"><p class="text-lg md:text-xl text-${theme}-800 font-semibold bg-${theme}-50/60 p-4 md:p-5 rounded-2xl shadow-sm">${sectionData.description}</p></div>`; }
