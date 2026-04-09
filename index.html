@@ -340,7 +340,7 @@
             renderIntro(sectionData) {
                 let headerHTML = '';
                 if (sectionData.description) {
-                    headerHTML += `<div class="text-center mb-8 fade-in"><p class="text-lg md:text-xl text-${sectionData.theme}-800 font-semibold bg-${sectionData.theme}-50 p-4 md:p-5 rounded-2xl shadow-sm inline-block w-full">${sectionData.description}</p></div>`;
+                    headerHTML += `<div class="text-center mb-8 fade-in"><p class="text-lg md:text-xl text-${sectionData.theme}-800 font-semibold bg-${sectionData.theme}-50/60 p-4 md:p-5 rounded-2xl shadow-sm inline-block w-full">${sectionData.description}</p></div>`;
                 }
                 let gridHTML = '<div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full fade-in">';
                 sectionData.content.forEach(block => {
@@ -356,7 +356,7 @@
                         </h3>
                         
                         <div class="mt-auto w-full flex-grow flex flex-col justify-center">
-                            <div class="text-base md:text-lg font-medium text-slate-700 bg-white/60 p-5 rounded-2xl border border-${block.theme}-100 flex-grow shadow-sm w-full">
+                            <div class="text-base md:text-lg font-medium text-slate-800 bg-${block.theme}-50 p-5 rounded-2xl border border-${block.theme}-200 flex-grow shadow-sm w-full">
                                 ${block.text}
                             </div>
                         </div>
