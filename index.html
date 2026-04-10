@@ -28,24 +28,28 @@
         }
         html { scroll-behavior: smooth; }
         
+        /* حركة الدخول للقسم */
         .fade-in { animation: fadeIn 0.4s ease-out forwards; }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* حركة خروج البطاقة عند التصنيف الصحيح */
         .fly-out { animation: flyOut 0.4s ease-in forwards; }
         @keyframes flyOut {
             0% { transform: translateY(0) scale(1); opacity: 1; }
             100% { transform: translateY(120px) scale(0.5); opacity: 0; }
         }
 
+        /* تمدد ناعم للتلميحات والإجابات */
         .smooth-expand { animation: smoothExpand 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; overflow: hidden; }
         @keyframes smoothExpand {
             0% { max-height: 0; opacity: 0; transform: translateY(-10px); }
             100% { max-height: 500px; opacity: 1; transform: translateY(0); }
         }
 
+        /* اهتزاز عند الخطأ */
         .shake { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
         @keyframes shake {
             10%, 90% { transform: translate3d(-1px, 0, 0); }
@@ -70,7 +74,7 @@
     <div id="app-root" class="flex-grow flex flex-col"></div>
 
     <script>
-        // ================= الأيقونات (تم تحديثها لترث اللونcurrentColor) =================
+        // ================= الأيقونات =================
         const ICONS = {
             youtube: `<svg class="w-7 h-7" fill="#FF0000" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21.582,6.186c-0.23-0.86-0.908-1.538-1.768-1.768C18.254,4,12,4,12,4S5.746,4,4.186,4.418 c-0.86,0.23-1.538,0.908-1.768,1.768C2,7.746,2,12,2,12s0,4.254,0.418,5.814c0.23,0.86,0.908,1.538,1.768,1.768 C5.746,20,12,20,12,20s6.254,0,7.814-0.418c0.86-0.23,1.538-0.908,1.768-1.768C22,16.254,22,12,22,12S22,7.746,21.582,6.186z M10,15.464V8.536L16,12L10,15.464z"/></svg>`,
             checkCircle: `<svg class="w-6 h-6 md:w-7 md:h-7 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`,
@@ -214,7 +218,7 @@
         };
 
         const App = {
-            state: { activeTab: '', progress: {}, sectionData: {} },
+            state: { activeTab: '', progress: {}, sectionData: {}, initialRender: {} },
             init() {
                 document.title = APP_DATA.pageTitle;
                 if (APP_DATA.sections.length > 0) this.state.activeTab = APP_DATA.sections[0].id;
@@ -225,7 +229,9 @@
             initSectionData() {
                 this.state.progress = {};
                 this.state.sectionData = {};
+                this.state.initialRender = {}; // لتتبع أول مرة يتم فيها عرض القسم
                 APP_DATA.sections.forEach(sec => {
+                    this.state.initialRender[sec.id] = true;
                     if (sec.type === 'intro') { this.state.progress[sec.id] = { answered: 0, total: 0, score: 0 }; } 
                     else if (sec.type === 'mcq') {
                         this.state.progress[sec.id] = { answered: 0, total: sec.questions.length, score: 0 };
@@ -297,9 +303,17 @@
                     const el = document.getElementById(`section-${sec.id}`);
                     if (el) {
                         if (this.state.activeTab === sec.id) {
-                            el.className = 'block';
+                            // إضافة حركة الظهور للقسم بالكامل فقط عند أول رندر له أو عند التبديل
+                            if (this.state.initialRender[sec.id]) {
+                                el.className = 'block fade-in';
+                                this.state.initialRender[sec.id] = false;
+                            } else {
+                                el.className = 'block';
+                            }
                             el.innerHTML = this.renderSection(sec);
-                        } else { el.className = 'hidden'; }
+                        } else { 
+                            el.className = 'hidden'; 
+                        }
                     }
                 });
                 this.checkFinalEvaluation();
@@ -340,9 +354,9 @@
             renderIntro(sectionData) {
                 let headerHTML = '';
                 if (sectionData.description) {
-                    headerHTML += `<div class="text-center mb-8 fade-in"><p class="text-lg md:text-xl text-${sectionData.theme}-800 font-semibold bg-${sectionData.theme}-50/60 p-4 md:p-5 rounded-2xl shadow-sm inline-block w-full">${sectionData.description}</p></div>`;
+                    headerHTML += `<div class="text-center mb-8"><p class="text-lg md:text-xl text-${sectionData.theme}-800 font-semibold bg-${sectionData.theme}-50/60 p-4 md:p-5 rounded-2xl shadow-sm inline-block w-full">${sectionData.description}</p></div>`;
                 }
-                let gridHTML = '<div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full fade-in">';
+                let gridHTML = '<div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">';
                 sectionData.content.forEach(block => {
                     gridHTML += `
                     <div class="bg-white p-6 md:p-8 rounded-[2rem] border-2 border-${block.theme}-200 hover:-translate-y-2 hover:shadow-xl transition-all duration-300 flex flex-col items-center gap-5 group cursor-default text-center shadow-sm">
@@ -368,14 +382,14 @@
                     </div>`;
                 });
                 gridHTML += '</div>';
-                return `<div class="max-w-4xl mx-auto space-y-6">${headerHTML}${gridHTML}<div class="flex justify-center mt-12 pt-4 fade-in"><button onclick="App.handleNextSection()" class="bg-${sectionData.theme}-600 hover:bg-${sectionData.theme}-700 text-white font-semibold text-xl md:text-2xl py-4 px-12 rounded-full shadow-lg flex items-center gap-3 active:scale-95 transition-all duration-300">هيا نبدأ التدريبات ${ICONS.arrowLeft}</button></div></div>`;
+                return `<div class="max-w-4xl mx-auto space-y-6">${headerHTML}${gridHTML}<div class="flex justify-center mt-12 pt-4"><button onclick="App.handleNextSection()" class="bg-${sectionData.theme}-600 hover:bg-${sectionData.theme}-700 text-white font-semibold text-xl md:text-2xl py-4 px-12 rounded-full shadow-lg flex items-center gap-3 active:scale-95 transition-all duration-300">هيا نبدأ التدريبات ${ICONS.arrowLeft}</button></div></div>`;
             },
             renderStandardSection(sectionData) {
                 const sectionId = sectionData.id;
                 const progress = this.state.progress[sectionId];
                 const isComplete = progress.total > 0 && progress.answered === progress.total;
                 const questions = this.state.sectionData[sectionId];
-                let html = '<div class="fade-in">';
+                let html = '<div>';
                 if (sectionData.description) { html += `<div class="text-center mb-8"><p class="text-lg md:text-xl text-${sectionData.theme}-800 font-semibold bg-${sectionData.theme}-50/60 p-4 md:p-5 rounded-2xl shadow-sm inline-block w-full">${sectionData.description}</p></div>`; }
                 questions.forEach((qState, idx) => { html += `<div id="${sectionId}-wrapper-${idx}">${this.renderQuestionCard(qState, idx, sectionId, sectionData.theme, sectionData.type)}</div>`; });
                 if (isComplete) { html += `<div class="mt-12 p-8 md:p-10 bg-white border-2 border-${sectionData.theme}-200 rounded-2xl shadow-sm text-center max-w-2xl mx-auto w-full"><h3 class="text-2xl md:text-3xl font-semibold text-slate-700 mb-6">نتيجتك في قسم (${sectionData.title})</h3><div class="text-4xl md:text-5xl font-bold text-${sectionData.theme}-600 flex items-center justify-center gap-3"><span>${toArabicNum(progress.score)}</span><span class="text-2xl md:text-3xl text-slate-400 font-medium mt-1">من</span><span>${toArabicNum(progress.total)}</span></div></div>`; }
@@ -406,7 +420,7 @@
             },
             renderSort(sectionData) {
                 const sectionId = sectionData.id; const theme = sectionData.theme; const state = this.state.sectionData[sectionId]; const { questions, currentIndex, status, animatingOut } = state; const isComplete = currentIndex >= questions.length;
-                let html = '<div class="flex flex-col items-center w-full gap-6 fade-in">';
+                let html = '<div class="flex flex-col items-center w-full gap-6">';
                 if (sectionData.description) { html += `<div class="text-center w-full"><p class="text-lg md:text-xl text-${theme}-800 font-semibold bg-${theme}-50/60 p-4 md:p-5 rounded-2xl shadow-sm">${sectionData.description}</p></div>`; }
                 let boxesHTML = ''; if (!isComplete) {
                     const colors = ['emerald', 'violet', 'amber', 'blue', 'indigo'];
@@ -416,13 +430,13 @@
                         boxesHTML += `<button ${(!animatingOut && status !== 'correct') ? `onclick="App.handleDynamicSortClick('${sectionId}', ${idx})"` : 'disabled'} class="${btnClass} min-w-[120px]"><span class="font-bold text-lg md:text-xl text-center leading-snug">${opt.text}</span></button>`;
                     });
                 }
-                html += `<div class="relative w-full min-h-[12rem] bg-slate-50 rounded-3xl border-2 border-dashed border-slate-300 flex flex-col items-center justify-center p-4 md:p-6 transition-all duration-500">${!isComplete ? `<div class="w-full max-w-2xl bg-white p-5 md:p-8 rounded-2xl shadow-lg border-2 border-slate-200 transition-all transform leading-snug flex flex-col justify-start z-10 ${animatingOut ? 'fly-out' : 'fade-in'} ${status === 'incorrect' ? 'shake' : ''}"><div class="flex items-center justify-between mb-4"><span class="text-${theme}-600 font-bold text-lg md:text-xl">البطاقة ${toArabicNum(currentIndex + 1)}</span><button onclick="App.toggleHint('${sectionId}', ${currentIndex})" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-lg md:text-xl font-bold transition-all active:scale-95 text-amber-500 hover:bg-amber-50">💡 تلميح</button></div><h3 class="text-3xl md:text-4xl font-bold leading-snug text-slate-800 text-center">«${state.questions[currentIndex].originalQuestion.text}»</h3><div class="${state.questions[currentIndex].showHint ? `block w-full smooth-expand` : 'hidden'} mt-4"><div class="bg-amber-50 text-amber-900 p-4 rounded-xl text-xl font-medium border border-amber-200 flex gap-2 items-start text-right"><span class="text-amber-500 font-semibold mt-1 shrink-0">💡</span><span class="leading-relaxed">${state.questions[currentIndex].originalQuestion.hint}</span></div></div><div class="${status === 'incorrect' ? 'block w-full smooth-expand' : 'hidden'} mt-5"><div class="p-4 bg-rose-50 border border-rose-200 rounded-xl text-center text-rose-700 text-lg md:text-xl font-bold shadow-sm">⚠️ إجابة خاطئة! ${state.questions[currentIndex].originalQuestion.explanation}</div></div></div>` : `<div class="text-3xl md:text-4xl font-bold text-emerald-500 flex flex-col items-center gap-4 fade-in py-6"><span class="text-6xl">🎉</span><span>اكتمل فرز البطاقات!</span></div>`}</div>${!isComplete ? `<div class="flex flex-row w-full max-w-2xl mx-auto gap-2 md:gap-4 mt-2 relative z-0 flex-wrap justify-center">${boxesHTML}</div>` : ''}</div>`;
-                if (isComplete) { const progress = this.state.progress[sectionId]; html += `<div class="mt-12 p-8 md:p-10 bg-white border-2 border-${theme}-200 rounded-2xl shadow-sm text-center fade-in max-w-2xl mx-auto w-full"><h3 class="text-2xl md:text-3xl font-semibold text-slate-700 mb-6">نتيجتك في قسم (${sectionData.title})</h3><div class="text-4xl md:text-5xl font-bold text-${theme}-600 flex items-center justify-center gap-3"><span>${toArabicNum(progress.score)}</span><span class="text-2xl md:text-3xl text-slate-400 font-medium mt-1">من</span><span>${toArabicNum(progress.total)}</span></div></div>`; }
+                html += `<div class="relative w-full min-h-[12rem] bg-slate-50 rounded-3xl border-2 border-dashed border-slate-300 flex flex-col items-center justify-center p-4 md:p-6 transition-all duration-500">${!isComplete ? `<div class="w-full max-w-2xl bg-white p-5 md:p-8 rounded-2xl shadow-lg border-2 border-slate-200 transition-all transform leading-snug flex flex-col justify-start z-10 ${animatingOut ? 'fly-out' : 'fade-in'} ${status === 'incorrect' ? 'shake' : ''}"><div class="flex items-center justify-between mb-4"><span class="text-${theme}-600 font-bold text-lg md:text-xl">البطاقة ${toArabicNum(currentIndex + 1)}</span><button onclick="App.toggleHint('${sectionId}', ${currentIndex})" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-lg md:text-xl font-bold transition-all active:scale-95 text-amber-500 hover:bg-amber-50">💡 تلميح</button></div><h3 class="text-3xl md:text-4xl font-bold leading-snug text-slate-800 text-center">«${state.questions[currentIndex].originalQuestion.text}»</h3><div class="${state.questions[currentIndex].showHint ? `block w-full smooth-expand` : 'hidden'} mt-4"><div class="bg-amber-50 text-amber-900 p-4 rounded-xl text-xl font-medium border border-amber-200 flex gap-2 items-start text-right"><span class="text-amber-500 font-semibold mt-1 shrink-0">💡</span><span class="leading-relaxed">${state.questions[currentIndex].originalQuestion.hint}</span></div></div><div class="${status === 'incorrect' ? 'block w-full smooth-expand' : 'hidden'} mt-5"><div class="p-4 bg-rose-50 border border-rose-200 rounded-xl text-center text-rose-700 text-lg md:text-xl font-bold shadow-sm">⚠️ إجابة خاطئة! ${state.questions[currentIndex].originalQuestion.explanation}</div></div></div>` : `<div class="text-3xl md:text-4xl font-bold text-emerald-500 flex flex-col items-center gap-4 py-6"><span class="text-6xl">🎉</span><span>اكتمل فرز البطاقات!</span></div>`}</div>${!isComplete ? `<div class="flex flex-row w-full max-w-2xl mx-auto gap-2 md:gap-4 mt-2 relative z-0 flex-wrap justify-center">${boxesHTML}</div>` : ''}</div>`;
+                if (isComplete) { const progress = this.state.progress[sectionId]; html += `<div class="mt-12 p-8 md:p-10 bg-white border-2 border-${theme}-200 rounded-2xl shadow-sm text-center max-w-2xl mx-auto w-full"><h3 class="text-2xl md:text-3xl font-semibold text-slate-700 mb-6">نتيجتك في قسم (${sectionData.title})</h3><div class="text-4xl md:text-5xl font-bold text-${theme}-600 flex items-center justify-center gap-3"><span>${toArabicNum(progress.score)}</span><span class="text-2xl md:text-3xl text-slate-400 font-medium mt-1">من</span><span>${toArabicNum(progress.total)}</span></div></div>`; }
                 html += this.renderSectionFooterControls(sectionId, isComplete); return html;
             },
             renderErrorCorrection(sectionData) {
                 const sectionId = sectionData.id; const progress = this.state.progress[sectionId]; const isComplete = progress.total > 0 && progress.answered === progress.total; const questions = this.state.sectionData[sectionId];
-                let html = '<div class="fade-in">';
+                let html = '<div>';
                 if (sectionData.description) { html += `<div class="text-center mb-8"><p class="text-lg md:text-xl text-${sectionData.theme}-800 font-semibold bg-${sectionData.theme}-50/60 p-4 md:p-5 rounded-2xl shadow-sm inline-block w-full">${sectionData.description}</p></div>`; }
                 questions.forEach((qState, idx) => { html += `<div id="${sectionId}-wrapper-${idx}">${this.renderErrorCard(qState, idx, sectionData.theme, sectionId)}</div>`; });
                 if (isComplete) { html += `<div class="mt-12 p-8 md:p-10 bg-white border-2 border-${sectionData.theme}-200 rounded-2xl shadow-sm text-center max-w-2xl mx-auto w-full"><h3 class="text-2xl md:text-3xl font-semibold text-slate-700 mb-6">نتيجتك في قسم (${sectionData.title})</h3><div class="text-4xl md:text-5xl font-bold text-${sectionData.theme}-600 flex items-center justify-center gap-3"><span>${toArabicNum(progress.score)}</span><span class="text-2xl md:text-3xl text-slate-400 font-medium mt-1">من</span><span>${toArabicNum(progress.total)}</span></div></div>`; }
@@ -439,7 +453,7 @@
                     wordsHTML += `<button ${step !== 1 ? 'disabled' : ''} onclick="App.handleErrorWordClick('${sectionId}', ${idx}, ${wIdx})" class="${wordClass}">${word}</button>`;
                 });
                 let optionsHTML = ''; if (step >= 2) {
-                    optionsHTML += `<div class="mt-8 mb-4 text-center font-bold text-xl text-slate-600 fade-in">اختر التصويب الصحيح:</div><div class="grid gap-3 grid-cols-1 md:grid-cols-3 fade-in w-full">`;
+                    optionsHTML += `<div class="mt-8 mb-4 text-center font-bold text-xl text-slate-600">اختر التصويب الصحيح:</div><div class="grid gap-3 grid-cols-1 md:grid-cols-3 w-full">`;
                     qState.options.forEach((opt, optIdx) => {
                         let btnClass = `p-4 rounded-xl border-2 transition-all font-semibold text-xl md:text-2xl flex items-center justify-center gap-2 `;
                         if (step === 2) { btnClass += `border-slate-200 bg-white text-slate-600 hover:bg-slate-50 active:scale-95 cursor-pointer`; } else { if (opt.isCorrect) btnClass += "bg-emerald-50 border-emerald-500 text-emerald-800 shadow-sm"; else if (selectedOption === opt) btnClass += "bg-rose-50 border-rose-500 text-rose-800 shadow-sm"; else btnClass += "bg-slate-50 border-slate-100 text-slate-400 opacity-50"; btnClass += " cursor-default"; }
@@ -451,15 +465,16 @@
             },
             renderFlashcards(sectionData) {
                 const sectionId = sectionData.id; const theme = sectionData.theme; const state = this.state.sectionData[sectionId]; const { cards, currentIndex, isFlipped, animatingOut } = state; const isComplete = currentIndex >= cards.length;
-                let html = `<div class="flex flex-col items-center w-full gap-6 fade-in">`;
+                let html = `<div class="flex flex-col items-center w-full gap-6">`;
                 if (sectionData.description) { html += `<div class="text-center w-full"><p class="text-lg md:text-xl text-${theme}-800 font-semibold bg-${theme}-50/60 p-4 md:p-5 rounded-2xl shadow-sm">${sectionData.description}</p></div>`; }
                 html += `<div class="relative w-full min-h-[20rem] flex flex-col items-center justify-center p-4 md:p-6 transition-all duration-500 perspective">`;
                 if (!isComplete) {
                     const card = cards[currentIndex]; const flippedClass = isFlipped ? 'rotate-y-180' : '';
-                    html += `<div class="w-full max-w-lg h-80 relative perspective ${animatingOut ? 'fly-out' : 'fade-in'}"><div id="flashcard-inner-${sectionId}" class="w-full h-full absolute preserve-3d flip-transition cursor-pointer ${flippedClass}" onclick="App.handleFlashcardFlip('${sectionId}')"><div class="absolute w-full h-full backface-hidden bg-white border-2 border-slate-200 rounded-3xl shadow-lg flex flex-col items-center justify-center p-8 text-center hover:border-${theme}-300 hover:shadow-xl transition-all"><span class="absolute top-6 right-6 text-${theme}-600 font-bold text-lg md:text-xl">البطاقة ${toArabicNum(currentIndex + 1)}</span><div class="text-slate-400 mb-4 animate-pulse">${ICONS.flipIcon}</div><h3 class="text-4xl md:text-5xl font-bold text-slate-800 leading-snug">${card.front}</h3></div><div class="absolute w-full h-full backface-hidden bg-slate-50 border-2 border-${theme}-400 rounded-3xl shadow-lg flex flex-col items-center justify-center p-6 md:p-8 text-center rotate-y-180"><h3 class="text-3xl font-bold text-${theme}-700 mb-4">${card.back}</h3><p class="text-xl font-medium text-slate-700 leading-relaxed mb-6">${card.explanation}</p><div class="w-full grid grid-cols-2 gap-3 mt-auto relative z-20" onclick="event.stopPropagation()"><button onclick="App.handleFlashcardAnswer('${sectionId}', true)" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl transition-transform active:scale-95 shadow-md flex items-center justify-center gap-2 text-lg">${ICONS.checkCircle} عرفتها</button><button onclick="App.handleFlashcardAnswer('${sectionId}', false)" class="bg-rose-500 hover:bg-rose-600 text-white font-bold py-3 rounded-xl transition-transform active:scale-95 shadow-md flex items-center justify-center gap-2 text-lg">${ICONS.xCircle} أخطأت</button></div></div></div></div>`;
-                } else { html += `<div class="text-3xl md:text-4xl font-bold text-emerald-500 flex flex-col items-center gap-4 fade-in py-10 bg-white border-2 border-emerald-200 w-full max-w-lg rounded-3xl shadow-lg"><span class="text-6xl">🏆</span><span>انتهت البطاقات!</span></div>`; }
+                    // تم إزالة animate-pulse من أيقونة flipIcon لضمان سلاسة حركة التقليب
+                    html += `<div class="w-full max-w-lg h-80 relative perspective ${animatingOut ? 'fly-out' : 'fade-in'}"><div id="flashcard-inner-${sectionId}" class="w-full h-full absolute preserve-3d flip-transition cursor-pointer ${flippedClass}" onclick="App.handleFlashcardFlip('${sectionId}')"><div class="absolute w-full h-full backface-hidden bg-white border-2 border-slate-200 rounded-3xl shadow-lg flex flex-col items-center justify-center p-8 text-center hover:border-${theme}-300 hover:shadow-xl transition-all"><span class="absolute top-6 right-6 text-${theme}-600 font-bold text-lg md:text-xl">البطاقة ${toArabicNum(currentIndex + 1)}</span><div class="text-slate-400 mb-4">${ICONS.flipIcon}</div><h3 class="text-4xl md:text-5xl font-bold text-slate-800 leading-snug">${card.front}</h3></div><div class="absolute w-full h-full backface-hidden bg-slate-50 border-2 border-${theme}-400 rounded-3xl shadow-lg flex flex-col items-center justify-center p-6 md:p-8 text-center rotate-y-180"><h3 class="text-3xl font-bold text-${theme}-700 mb-4">${card.back}</h3><p class="text-xl font-medium text-slate-700 leading-relaxed mb-6">${card.explanation}</p><div class="w-full grid grid-cols-2 gap-3 mt-auto relative z-20" onclick="event.stopPropagation()"><button onclick="App.handleFlashcardAnswer('${sectionId}', true)" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl transition-transform active:scale-95 shadow-md flex items-center justify-center gap-2 text-lg">${ICONS.checkCircle} عرفتها</button><button onclick="App.handleFlashcardAnswer('${sectionId}', false)" class="bg-rose-500 hover:bg-rose-600 text-white font-bold py-3 rounded-xl transition-transform active:scale-95 shadow-md flex items-center justify-center gap-2 text-lg">${ICONS.xCircle} أخطأت</button></div></div></div></div>`;
+                } else { html += `<div class="text-3xl md:text-4xl font-bold text-emerald-500 flex flex-col items-center gap-4 py-10 bg-white border-2 border-emerald-200 w-full max-w-lg rounded-3xl shadow-lg"><span class="text-6xl">🏆</span><span>انتهت البطاقات!</span></div>`; }
                 html += `</div></div>`;
-                if (isComplete) { const progress = this.state.progress[sectionId]; html += `<div class="mt-8 p-8 md:p-10 bg-white border-2 border-${theme}-200 rounded-2xl shadow-sm text-center fade-in max-w-2xl mx-auto w-full"><h3 class="text-2xl md:text-3xl font-semibold text-slate-700 mb-6">نتيجتك في قسم (${sectionData.title})</h3><div class="text-4xl md:text-5xl font-bold text-${theme}-600 flex items-center justify-center gap-3"><span>${toArabicNum(progress.score)}</span><span class="text-2xl md:text-3xl text-slate-400 font-medium mt-1">من</span><span>${toArabicNum(progress.total)}</span></div></div>`; }
+                if (isComplete) { const progress = this.state.progress[sectionId]; html += `<div class="mt-8 p-8 md:p-10 bg-white border-2 border-${theme}-200 rounded-2xl shadow-sm text-center max-w-2xl mx-auto w-full"><h3 class="text-2xl md:text-3xl font-semibold text-slate-700 mb-6">نتيجتك في قسم (${sectionData.title})</h3><div class="text-4xl md:text-5xl font-bold text-${theme}-600 flex items-center justify-center gap-3"><span>${toArabicNum(progress.score)}</span><span class="text-2xl md:text-3xl text-slate-400 font-medium mt-1">من</span><span>${toArabicNum(progress.total)}</span></div></div>`; }
                 html += this.renderSectionFooterControls(sectionId, isComplete); return html;
             },
             renderClassify(sectionData) {
@@ -467,7 +482,8 @@
                 let html = ''; const currentQState = isComplete ? null : questions[currentIndex]; const currentQuestion = isComplete ? null : currentQState.originalQuestion; const showHint = isComplete ? false : currentQState.showHint; const hintFadeClass = (currentQState && currentQState.hintAnimate) ? 'smooth-expand' : ''; const shakeClass = status === 'incorrect' ? 'shake' : '';
                 let boxesHTML = ''; sectionData.categories.forEach(cat => {
                     const boxTheme = cat.theme || 'blue'; 
-                    const placedHtml = placedItems[cat.id].map(item => `<div class="mt-2 p-3 md:p-4 rounded-xl text-xl md:text-2xl font-bold bg-white border-r-4 border-${boxTheme}-400 shadow-md leading-snug fade-in text-center text-slate-800 relative z-10">${item.text}</div>`).join('');
+                    // إزالة fade-in من البطاقات المصنفة مسبقاً لمنع الفليكرينج
+                    const placedHtml = placedItems[cat.id].map(item => `<div class="mt-2 p-3 md:p-4 rounded-xl text-xl md:text-2xl font-bold bg-white border-r-4 border-${boxTheme}-400 shadow-md leading-snug text-center text-slate-800 relative z-10">${item.text}</div>`).join('');
                     
                     let boxClass = `relative overflow-hidden flex flex-col w-full p-5 md:p-6 rounded-[2.5rem] bg-white/50 backdrop-blur-sm border-2 border-slate-300 shadow-[inset_0_2px_8px_rgba(0,0,0,0.03)] transition-all duration-300 min-h-[12rem] `;
                     if (!isComplete && status !== 'correct' && !animatingOut) { boxClass += `cursor-pointer hover:bg-white/80 hover:border-slate-400 hover:shadow-lg active:scale-[0.98]`; } else { boxClass += `cursor-default`; }
@@ -477,10 +493,11 @@
                     
                     boxesHTML += `<div ${(!isComplete && status !== 'correct' && !animatingOut) ? `onclick="App.handleClassifyClick('${sectionId}', '${cat.id}')"` : ''} class="${boxClass}"><div class="absolute top-0 left-0 w-full h-2 bg-${boxTheme}-400 opacity-60 z-10"></div><div class="absolute -bottom-10 -left-10 text-${boxTheme}-200 opacity-10 transform -rotate-12 scale-150 pointer-events-none z-0">${watermarkIcon}</div><div class="flex items-center justify-center gap-3 relative z-10 mb-3"><div class="bg-white shadow-sm p-2 rounded-full flex items-center justify-center text-${boxTheme}-500">${smallTrayIcon}</div><h3 class="font-bold text-xl md:text-2xl text-slate-900 m-0">${cat.label}</h3></div><div class="w-2/3 h-px bg-slate-300 mx-auto mb-4 relative z-10"></div><div class="flex flex-col gap-2 flex-grow relative z-10">${placedHtml}</div></div>`;
                 });
-                html += `<div class="flex flex-col items-center w-full gap-6 fade-in">`;
+                // إزالة fade-in من الحاوية لتجنب تكرار الحركة عند كل إجابة
+                html += `<div class="flex flex-col items-center w-full gap-6">`;
                 if (sectionData.description) { html += `<div class="text-center w-full"><p class="text-lg md:text-xl text-${theme}-800 font-semibold bg-${theme}-50/60 p-4 md:p-5 rounded-2xl shadow-sm">${sectionData.description}</p></div>`; }
-                html += `<div class="relative w-full min-h-[12rem] bg-slate-50 rounded-3xl border-2 border-dashed border-slate-300 flex flex-col items-center justify-center p-4 md:p-6 transition-all duration-500">${currentQuestion ? `<div id="classify-card" class="w-full max-w-2xl bg-white p-5 md:p-8 rounded-2xl shadow-lg border-2 border-slate-200 transition-all transform leading-snug flex flex-col justify-start z-10 ${animatingOut ? 'fly-out' : 'fade-in'} ${shakeClass}"><div class="flex items-center justify-between mb-4"><span class="text-${theme}-600 font-bold text-lg md:text-xl">البطاقة ${toArabicNum(currentIndex + 1)}</span><button onclick="App.toggleHint('${sectionId}', ${currentIndex})" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-lg md:text-xl font-bold transition-all active:scale-95 text-amber-500 hover:bg-amber-50">💡 تلميح</button></div><span class="block mb-4 text-slate-500 text-sm md:text-base font-medium text-center">إلى أي صندوق تنتمي هذه البطاقة؟</span><h3 class="text-3xl md:text-4xl font-bold leading-snug text-slate-800 text-center">«${currentQuestion.text}»</h3><div class="${showHint ? `block w-full ${hintFadeClass}` : 'hidden'} mt-4"><div class="bg-amber-50 text-amber-900 p-4 rounded-xl text-xl font-medium border border-amber-200 flex gap-2 items-start text-right"><span class="text-amber-500 font-semibold mt-1 shrink-0">💡</span><span class="leading-relaxed">${currentQuestion.hint}</span></div></div><div class="${status === 'incorrect' ? 'block w-full smooth-expand' : 'hidden'} mt-5"><div class="p-4 bg-rose-50 border border-rose-200 rounded-xl text-center text-rose-700 text-lg md:text-xl font-bold shadow-sm">⚠️ ${currentQuestion.explanation}</div></div></div>` : `<div class="text-3xl md:text-4xl font-bold text-emerald-500 flex flex-col items-center gap-4 fade-in py-6"><span class="text-6xl">🎉</span><span>اكتملت الصناديق بنجاح!</span></div>`}</div><div class="w-full grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">${boxesHTML}</div></div>`;
-                if (isComplete) { const progress = this.state.progress[sectionId]; html += `<div class="mt-12 p-8 md:p-10 bg-white border-2 border-${theme}-200 rounded-2xl shadow-sm text-center fade-in max-w-2xl mx-auto w-full"><h3 class="text-2xl md:text-3xl font-semibold text-slate-700 mb-6">نتيجتك في قسم (${sectionData.title})</h3><div class="text-4xl md:text-5xl font-bold text-${theme}-600 flex items-center justify-center gap-3"><span>${toArabicNum(progress.score)}</span><span class="text-2xl md:text-3xl text-slate-400 font-medium mt-1">من</span><span>${toArabicNum(progress.total)}</span></div></div>`; }
+                html += `<div class="relative w-full min-h-[12rem] bg-slate-50 rounded-3xl border-2 border-dashed border-slate-300 flex flex-col items-center justify-center p-4 md:p-6 transition-all duration-500">${currentQuestion ? `<div id="classify-card" class="w-full max-w-2xl bg-white p-5 md:p-8 rounded-2xl shadow-lg border-2 border-slate-200 transition-all transform leading-snug flex flex-col justify-start z-10 ${animatingOut ? 'fly-out' : 'fade-in'} ${shakeClass}"><div class="flex items-center justify-between mb-4"><span class="text-${theme}-600 font-bold text-lg md:text-xl">البطاقة ${toArabicNum(currentIndex + 1)}</span><button onclick="App.toggleHint('${sectionId}', ${currentIndex})" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-lg md:text-xl font-bold transition-all active:scale-95 text-amber-500 hover:bg-amber-50">💡 تلميح</button></div><span class="block mb-4 text-slate-500 text-sm md:text-base font-medium text-center">إلى أي صندوق تنتمي هذه البطاقة؟</span><h3 class="text-3xl md:text-4xl font-bold leading-snug text-slate-800 text-center">«${currentQuestion.text}»</h3><div class="${showHint ? `block w-full ${hintFadeClass}` : 'hidden'} mt-4"><div class="bg-amber-50 text-amber-900 p-4 rounded-xl text-xl font-medium border border-amber-200 flex gap-2 items-start text-right"><span class="text-amber-500 font-semibold mt-1 shrink-0">💡</span><span class="leading-relaxed">${currentQuestion.hint}</span></div></div><div class="${status === 'incorrect' ? 'block w-full smooth-expand' : 'hidden'} mt-5"><div class="p-4 bg-rose-50 border border-rose-200 rounded-xl text-center text-rose-700 text-lg md:text-xl font-bold shadow-sm">⚠️ ${currentQuestion.explanation}</div></div></div>` : `<div class="text-3xl md:text-4xl font-bold text-emerald-500 flex flex-col items-center gap-4 py-6"><span class="text-6xl">🎉</span><span>اكتملت الصناديق بنجاح!</span></div>`}</div><div class="w-full grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">${boxesHTML}</div></div>`;
+                if (isComplete) { const progress = this.state.progress[sectionId]; html += `<div class="mt-12 p-8 md:p-10 bg-white border-2 border-${theme}-200 rounded-2xl shadow-sm text-center max-w-2xl mx-auto w-full"><h3 class="text-2xl md:text-3xl font-semibold text-slate-700 mb-6">نتيجتك في قسم (${sectionData.title})</h3><div class="text-4xl md:text-5xl font-bold text-${theme}-600 flex items-center justify-center gap-3"><span>${toArabicNum(progress.score)}</span><span class="text-2xl md:text-3xl text-slate-400 font-medium mt-1">من</span><span>${toArabicNum(progress.total)}</span></div></div>`; }
                 html += this.renderSectionFooterControls(sectionId, isComplete); return html;
             },
             renderSectionFooterControls(sectionId, isComplete) {
@@ -523,7 +540,7 @@
             handleErrorWordClick(sectionId, qIndex, wIndex) {
                 const qState = this.state.sectionData[sectionId][qIndex]; if (qState.step !== 1) return;
                 const isCorrectError = wIndex === qState.originalQuestion.errorWordIndex;
-                if (isCorrectError) { qState.selectedWordIndex = wIndex; qState.step = 2; qState.shakeWordIndex = null; } else { qState.shakeWordIndex = wIndex; setTimeout(() => { if(this.state.sectionData[sectionId][qIndex]) { this.state.sectionData[sectionId][qIndex].shakeWordIndex = null; const sectionDef = APP_DATA.sections.find(s => s.id === sectionId); document.getElementById(`${sectionId}-wrapper-${qIndex}`).innerHTML = this.renderErrorCard(qState, qIndex, sectionDef.theme, sectionId); } }, 500); }
+                if (isCorrectError) { qState.selectedWordIndex = wIndex; qState.step = 2; qState.shakeWordIndex = null; } else { qState.shakeWordIndex = wIndex; setTimeout(() => { if(this.state.sectionData[sectionId][qIndex]) { this.state.sectionData[sectionId][qIndex].shakeWordIndex = null; const sectionDef = APP_DATA.sections.find(s => s.id === sectionId); const wrapper = document.getElementById(`${sectionId}-wrapper-${qIndex}`); if(wrapper) wrapper.innerHTML = this.renderErrorCard(qState, qIndex, sectionDef.theme, sectionId); } }, 500); }
                 const sectionDef = APP_DATA.sections.find(s => s.id === sectionId); document.getElementById(`${sectionId}-wrapper-${qIndex}`).innerHTML = this.renderErrorCard(qState, qIndex, sectionDef.theme, sectionId);
             },
             handleErrorOptionClick(sectionId, qIndex, optIndex) {
@@ -545,6 +562,7 @@
             handleNextSection() { const currentIndex = APP_DATA.sections.findIndex(s => s.id === this.state.activeTab); if (currentIndex < APP_DATA.sections.length - 1) this.handleTabChange(APP_DATA.sections[currentIndex + 1].id); },
             handleResetSection(sectionId) {
                 const secDef = APP_DATA.sections.find(s => s.id === sectionId); this.state.progress[sectionId].answered = 0; this.state.progress[sectionId].score = 0;
+                this.state.initialRender[sectionId] = true; // السماح بحركة fade-in مرة أخرى عند الريسيت
                 if (secDef.type === 'mcq') this.state.sectionData[sectionId] = secDef.questions.map(q => ({ originalQuestion: q, options: shuffleArray(q.options.map((opt, oIdx) => ({ text: opt, isCorrect: oIdx === q.correct }))), answered: false, selectedOption: null, showHint: false }));
                 else if (secDef.type === 'classify') { let placedItems = {}; secDef.categories.forEach(c => placedItems[c.id] = []); this.state.sectionData[sectionId] = { questions: shuffleArray(secDef.questions).map(q => ({ originalQuestion: q, showHint: false })), currentIndex: 0, status: 'idle', placedItems: placedItems, animatingOut: false }; }
                 else if (secDef.type === 'error_correction') this.state.sectionData[sectionId] = secDef.questions.map(q => ({ originalQuestion: q, options: shuffleArray(q.options.map((opt, oIdx) => ({ text: opt, isCorrect: oIdx === q.correctOptionIndex }))), step: 1, selectedWordIndex: null, selectedOption: null, showHint: false, shakeWordIndex: null }));
