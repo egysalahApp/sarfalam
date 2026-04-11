@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -193,7 +194,7 @@
                         { text: "ما القاعدة الذهبية للممنوع من الصرف؟", options: ['يُنون ويُجر بالكسرة', 'لا يُنون ويُجر بالفتحة', 'يُجر بالياء ولا يُنون'], correct: 1, hint: 'الفتحة بديلة عن الكسرة.', explanation: 'الممنوع من الصرف لا يقبل التنوين، ويُجر بالفتحة نيابة عن الكسرة.' },
                         { text: "جميع أسماء الأنبياء الآتية ممنوعة من الصرف ما عدا واحدًا:", options: ['يوسف', 'إسحاق', 'صالح'], correct: 2, hint: 'تذكر (ص ش ن م ل هـ).', explanation: 'صالح اسم مصروف، أما البقية فهي أعلام أعجمية ممنوعة.' },
                         { text: "لأي سبب حُرمت كلمة (طلحة) من التنوين؟", options: ['لأنها علم مؤنث لفظًا', 'لأنها علم على وزن الفعل', 'لأنها علم أعجمي'], correct: 0, hint: 'ينتهي بتاء مربوطة.', explanation: 'كل علم مذكر ينتهي بتاء مربوطة يُعدُّ (مؤنثًا لفظيًا) ويُمنع من الصرف.' },
-                        { text: "من العلم المؤنث الثلاثي ساكن الوسط: كلمتا (هند، مصر)، ما حكمهما؟", options: ['يجب منعهما من الصرف', 'يجب صرفهما', 'يجوز صرفهما ويجوز منعهما'], correct: 2, hint: 'اقرأ الآية (اهبطوا مصرًا...).', explanation: 'العلم المؤنث الثلاثي ساكن الوسط يجوز فيه الوجهان (الصرف والمنع).' },
+                        { text: "كلمتا (هند، ومصر) علم مؤنث ثلاثي ساكن الوسط، ما حكمهما؟", options: ['يجب منعهما من الصرف', 'يجب صرفهما', 'يجوز صرفهما ويجوز منعهما'], correct: 2, hint: 'اقرأ الآية (اهبطوا مصرًا...).', explanation: 'العلم المؤنث الثلاثي الساكن الوسط يجوز فيه الوجهان (الصرف والمنع).' },
                         { text: "إذا أردنا تفسير منع كلمة (أمجد) من الصرف، فالقاعدة هي:", options: ['لأنها علم أعجمي', 'لأنها علم على وزن الفعل', 'لأنها علم مؤنث'], correct: 1, hint: 'تتطابق بنيته مع بنية الأفعال.', explanation: 'لأنها (علم على وزن الفعل) مثل: أحمد، أمجد، ويزيد.' },
                         { text: "علامَ اعتمد النحاة في منع كلمة (بورسعيد) من الصرف؟", options: ['لأنها علم أعجمي', 'لأنها علم مؤنث', 'لأنها مركب تركيبًا مزجيًا'], correct: 2, hint: 'مكون من جزأين تداخلا ليصبحا كلمة واحدة.', explanation: 'لأنها اسمان اندمجا معًا حتى صارا كالجزء الواحد (بور + سعيد).' },
                         { text: "المانع من الصرف لكلمة (مُضَر) يكمن في أنه:", options: ['على وزن فُعَل', 'علم أعجمي', 'علم على وزن الفعل'], correct: 0, hint: 'مضموم الأول مفتوح الثاني.', explanation: 'لأنه علم على وزن (فُعَل) مثل: عُمر، هُبل، مُضَر.' },
@@ -422,47 +423,63 @@
                 let html = '<div class="flex flex-col items-center w-full gap-6">';
                 if (sectionData.description) { html += `<div class="text-center w-full"><p class="text-lg md:text-xl text-${theme}-800 font-semibold bg-${theme}-50/60 p-4 md:p-5 rounded-2xl shadow-sm">${sectionData.description}</p></div>`; }
                 
-                // بناء أزرار الإجابة داخل البطاقة
+                // بناء أزرار الإجابة المنفصلة (يتم عرضها دائماً إلا إذا انتهت الأسئلة)
                 let actionButtonsHTML = '';
-                if (!isComplete && !animatingOut && status !== 'correct') {
-                    actionButtonsHTML = `<div class="mt-6 border-t-2 border-slate-100 pt-6 grid grid-cols-1 md:grid-cols-2 gap-4 w-full">`;
+                if (!isComplete) {
+                    actionButtonsHTML = `<div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">`;
                     state.questions[currentIndex].options.forEach((opt, idx) => {
-                        // ألوان دلالية: الأخضر للمصروف والأحمر للممنوع
                         const btnTheme = opt.text.includes('ممنوع') ? 'rose' : 'emerald';
-                        actionButtonsHTML += `<button onclick="App.handleDynamicSortClick('${sectionId}', ${idx})" class="p-4 rounded-xl border-2 border-${btnTheme}-200 bg-${btnTheme}-50 text-${btnTheme}-700 font-bold text-xl md:text-2xl md:hover:bg-${btnTheme}-100 md:hover:-translate-y-1 md:hover:border-${btnTheme}-300 active:scale-95 transition-all shadow-sm flex items-center justify-center leading-snug">${opt.text}</button>`;
+                        // تعطيل التفاعل اللحظي أثناء حركة الطيران (لمنع النقر المزدوج)
+                        const pointerEvents = (animatingOut || status === 'correct') ? 'pointer-events-none opacity-90' : 'md:hover:-translate-y-1 md:hover:shadow-lg active:scale-95 cursor-pointer';
+                        
+                        actionButtonsHTML += `<button ${animatingOut || status === 'correct' ? 'disabled' : ''} onclick="App.handleDynamicSortClick('${sectionId}', ${idx})" class="p-4 md:p-5 rounded-2xl border-2 border-${btnTheme}-200 bg-white text-${btnTheme}-700 font-bold text-xl md:text-2xl md:hover:bg-${btnTheme}-50 md:hover:border-${btnTheme}-300 transition-all shadow-md flex items-center justify-center leading-snug ${pointerEvents}">${opt.text}</button>`;
                     });
                     actionButtonsHTML += `</div>`;
                 }
 
-                html += `<div class="relative w-full min-h-[24rem] bg-slate-50 rounded-3xl border-2 border-dashed border-slate-300 flex flex-col items-center justify-center p-4 md:p-6 transition-all duration-500">`;
+                // الحاوية الكلية: مرنة (flex-col) لضمان توزيع المساحة (justify-between)
+                html += `<div class="relative w-full min-h-[24rem] bg-slate-50 rounded-3xl border-2 border-dashed border-slate-300 flex flex-col items-center justify-between p-4 md:p-6 transition-all duration-500">`;
                 
                 if (!isComplete) {
+                    // المنطقة العلوية: حاوية البطاقة المتحركة (تتوسط المساحة المتاحة)
                     html += `
-                    <div class="w-full max-w-2xl bg-white p-5 md:p-8 rounded-2xl shadow-lg border-2 border-slate-200 transition-all transform leading-snug flex flex-col justify-start z-10 ${animatingOut ? 'fly-out' : 'fade-in'} ${status === 'incorrect' ? 'shake' : ''}">
-                        <div class="flex items-center justify-between mb-4">
-                            <span class="text-${theme}-600 font-bold text-lg md:text-xl">البطاقة ${toArabicNum(currentIndex + 1)}</span>
-                            <button onclick="App.toggleHint('${sectionId}', ${currentIndex})" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-lg md:text-xl font-bold transition-all active:scale-95 text-amber-500 md:hover:bg-amber-50">💡 تلميح</button>
-                        </div>
-                        <div class="min-h-[8rem] md:min-h-[10rem] flex flex-col items-center justify-center w-full">
-                            <span class="block mb-2 text-slate-500 text-sm md:text-base font-medium text-center">هل هذا العَلَم مصروف أم ممنوع من الصرف؟</span>
-                            <h3 class="text-4xl md:text-5xl font-bold leading-snug text-slate-800 text-center py-2">«${state.questions[currentIndex].originalQuestion.text}»</h3>
-                        </div>
-                        
-                        <div class="${state.questions[currentIndex].showHint ? `block w-full smooth-expand` : 'hidden'} mt-4">
-                            <div class="bg-amber-50 text-amber-900 p-4 rounded-xl text-xl font-medium border border-amber-200 flex gap-2 items-start text-right">
-                                <span class="text-amber-500 font-semibold mt-1 shrink-0">💡</span>
-                                <span class="leading-relaxed">${state.questions[currentIndex].originalQuestion.hint}</span>
+                    <div class="flex-grow flex flex-col justify-center w-full max-w-2xl pb-6">
+                        <div class="w-full bg-white p-5 md:p-8 rounded-2xl shadow-lg border-2 border-slate-200 leading-snug flex flex-col justify-start z-10 ${animatingOut ? 'fly-out' : 'fade-in'} ${status === 'incorrect' ? 'shake' : ''}">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-${theme}-600 font-bold text-lg md:text-xl">البطاقة ${toArabicNum(currentIndex + 1)}</span>
+                                <button onclick="App.toggleHint('${sectionId}', ${currentIndex})" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-lg md:text-xl font-bold transition-all active:scale-95 text-amber-500 md:hover:bg-amber-50">💡 تلميح</button>
+                            </div>
+                            <div class="min-h-[8rem] md:min-h-[10rem] flex flex-col items-center justify-center w-full">
+                                <span class="block mb-2 text-slate-500 text-sm md:text-base font-medium text-center">هل هذا العَلَم مصروف أم ممنوع من الصرف؟</span>
+                                <h3 class="text-4xl md:text-5xl font-bold leading-snug text-slate-800 text-center py-2">«${state.questions[currentIndex].originalQuestion.text}»</h3>
+                            </div>
+                            
+                            <div class="${state.questions[currentIndex].showHint ? `block w-full smooth-expand` : 'hidden'} mt-4">
+                                <div class="bg-amber-50 text-amber-900 p-4 rounded-xl text-xl font-medium border border-amber-200 flex gap-2 items-start text-right">
+                                    <span class="text-amber-500 font-semibold mt-1 shrink-0">💡</span>
+                                    <span class="leading-relaxed">${state.questions[currentIndex].originalQuestion.hint}</span>
+                                </div>
+                            </div>
+                            
+                            <div class="${status === 'incorrect' ? 'block w-full smooth-expand' : 'hidden'} mt-5">
+                                <div class="p-4 bg-rose-50 border border-rose-200 rounded-xl text-center text-rose-700 text-lg md:text-xl font-bold shadow-sm">⚠️ إجابة خاطئة! ${state.questions[currentIndex].originalQuestion.explanation}</div>
                             </div>
                         </div>
-                        
-                        <div class="${status === 'incorrect' ? 'block w-full smooth-expand' : 'hidden'} mt-5">
-                            <div class="p-4 bg-rose-50 border border-rose-200 rounded-xl text-center text-rose-700 text-lg md:text-xl font-bold shadow-sm">⚠️ إجابة خاطئة! ${state.questions[currentIndex].originalQuestion.explanation}</div>
-                        </div>
-                        
+                    </div>`;
+                    
+                    // المنطقة السفلية: حاوية الأزرار الثابتة كالصخر
+                    html += `
+                    <div class="w-full max-w-2xl shrink-0 z-0">
                         ${actionButtonsHTML}
                     </div>`;
+
                 } else {
-                    html += `<div class="text-3xl md:text-4xl font-bold text-emerald-500 flex flex-col items-center gap-4 py-6"><span class="text-6xl">🎉</span><span>اكتمل فرز البطاقات!</span></div>`;
+                    html += `
+                    <div class="flex-grow flex items-center justify-center w-full">
+                        <div class="text-3xl md:text-4xl font-bold text-emerald-500 flex flex-col items-center gap-4 py-6">
+                            <span class="text-6xl">🎉</span><span>اكتمل فرز البطاقات!</span>
+                        </div>
+                    </div>`;
                 }
 
                 html += `</div></div>`;
@@ -526,29 +543,28 @@
                 const hintFadeClass = (currentQState && currentQState.hintAnimate) ? 'smooth-expand' : ''; 
                 const shakeClass = status === 'incorrect' ? 'shake' : '';
 
-                // بناء أزرار الإجابة داخل البطاقة العلوية
+                // بناء أزرار الإجابة المنفصلة (تظهر دائماً إلا إذا انتهت الأسئلة)
                 let actionButtonsHTML = '';
-                if (currentQuestion && !animatingOut && status !== 'correct') {
-                    actionButtonsHTML = `<div class="mt-6 border-t-2 border-slate-100 pt-6 grid grid-cols-2 md:grid-cols-4 gap-3 w-full">`;
+                if (currentQuestion) {
+                    actionButtonsHTML = `<div class="grid grid-cols-2 md:grid-cols-4 gap-3 w-full">`;
                     sectionData.categories.forEach(cat => {
                         const btnTheme = cat.theme || 'blue';
-                        actionButtonsHTML += `<button onclick="App.handleClassifyClick('${sectionId}', '${cat.id}')" class="p-3 rounded-xl border-2 border-${btnTheme}-200 bg-${btnTheme}-50 text-${btnTheme}-700 font-bold text-lg md:hover:bg-${btnTheme}-100 md:hover:-translate-y-1 md:hover:border-${btnTheme}-300 active:scale-95 transition-all shadow-sm flex items-center justify-center leading-snug">${cat.label}</button>`;
+                        // تعطيل التفاعل اللحظي أثناء حركة الطيران
+                        const pointerEvents = (animatingOut || status === 'correct') ? 'pointer-events-none opacity-90' : 'md:hover:-translate-y-1 md:hover:shadow-lg active:scale-95 cursor-pointer';
+                        
+                        actionButtonsHTML += `<button ${animatingOut || status === 'correct' ? 'disabled' : ''} onclick="App.handleClassifyClick('${sectionId}', '${cat.id}')" class="p-3 md:p-4 rounded-2xl border-2 border-${btnTheme}-200 bg-white text-${btnTheme}-700 font-bold text-lg md:hover:bg-${btnTheme}-50 md:hover:border-${btnTheme}-300 transition-all shadow-md flex items-center justify-center leading-snug ${pointerEvents}">${cat.label}</button>`;
                     });
                     actionButtonsHTML += `</div>`;
                 }
 
-                // بناء الصناديق الزجاجية السفلية (صلبة وبدون تأثيرات حركية)
+                // بناء الصناديق الزجاجية السفلية
                 let boxesHTML = ''; 
                 sectionData.categories.forEach(cat => {
                     const boxTheme = cat.theme || 'blue'; 
-                    // العناصر المصنفة تظهر بدون fade-in لتجنب الوميض
                     const placedHtml = placedItems[cat.id].map(item => `<div class="mt-2 p-3 md:p-4 rounded-xl text-xl md:text-2xl font-bold bg-white border-r-4 border-${boxTheme}-400 shadow-md leading-snug text-center text-slate-800 relative z-10">${item.text}</div>`).join('');
-                    
-                    // حاوية الصندوق: صلبة، زجاجية، بدون cursor-pointer أو hover أو onClick
                     let boxClass = `relative overflow-hidden flex flex-col w-full p-5 md:p-6 rounded-[2.5rem] bg-white/50 backdrop-blur-sm border-2 border-slate-300 shadow-[inset_0_2px_8px_rgba(0,0,0,0.03)] min-h-[12rem] cursor-default`;
-                    
                     const smallTrayIcon = ICONS.tray.replace('w-8 h-8 md:w-12 md:h-12 mb-2 opacity-80', 'w-6 h-6 md:w-7 md:h-7 shrink-0');
-                    const watermarkIcon = ICONS.tray.replace('w-8 h-8 md:w-12 md:h-12 mb-2 opacity-80', 'w-32 h-32 text-current opacity-100'); // تعزيز وضوح العلامة المائية للتحكم بها عبر الأب
+                    const watermarkIcon = ICONS.tray.replace('w-8 h-8 md:w-12 md:h-12 mb-2 opacity-80', 'w-32 h-32 text-current opacity-100'); 
                     
                     boxesHTML += `
                     <div class="${boxClass}">
@@ -566,39 +582,52 @@
                 html += `<div class="flex flex-col items-center w-full gap-6">`;
                 if (sectionData.description) { html += `<div class="text-center w-full"><p class="text-lg md:text-xl text-${theme}-800 font-semibold bg-${theme}-50/60 p-4 md:p-5 rounded-2xl shadow-sm">${sectionData.description}</p></div>`; }
                 
-                // حاوية البطاقة العلوية
-                html += `<div class="relative w-full min-h-[24rem] bg-slate-50 rounded-3xl border-2 border-dashed border-slate-300 flex flex-col items-center justify-center p-4 md:p-6 transition-all duration-500">`;
+                // الحاوية الكلية: مرنة (flex-col) لضمان التوزيع (justify-between)
+                html += `<div class="relative w-full min-h-[24rem] bg-slate-50 rounded-3xl border-2 border-dashed border-slate-300 flex flex-col items-center justify-between p-4 md:p-6 transition-all duration-500">`;
                 
                 if (currentQuestion) {
+                    // المنطقة العلوية: حاوية البطاقة المتحركة
                     html += `
-                    <div id="classify-card" class="w-full max-w-3xl bg-white p-5 md:p-8 rounded-2xl shadow-lg border-2 border-slate-200 transition-all transform leading-snug flex flex-col justify-start z-10 ${animatingOut ? 'fly-out' : 'fade-in'} ${shakeClass}">
-                        <div class="flex items-center justify-between mb-4">
-                            <span class="text-${theme}-600 font-bold text-lg md:text-xl">البطاقة ${toArabicNum(currentIndex + 1)}</span>
-                            <button onclick="App.toggleHint('${sectionId}', ${currentIndex})" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-lg md:text-xl font-bold transition-all active:scale-95 text-amber-500 md:hover:bg-amber-50">💡 تلميح</button>
-                        </div>
-                        <div class="min-h-[8rem] md:min-h-[10rem] flex flex-col items-center justify-center w-full">
-                            <span class="block mb-4 text-slate-500 text-sm md:text-base font-medium text-center">إلى أي صندوق ينتمي هذا العَلَم؟</span>
-                            <h3 class="text-3xl md:text-4xl font-bold leading-snug text-slate-800 text-center">«${currentQuestion.text}»</h3>
-                        </div>
-                        
-                        <div class="${showHint ? `block w-full ${hintFadeClass}` : 'hidden'} mt-4">
-                            <div class="bg-amber-50 text-amber-900 p-4 rounded-xl text-xl font-medium border border-amber-200 flex gap-2 items-start text-right">
-                                <span class="text-amber-500 font-semibold mt-1 shrink-0">💡</span>
-                                <span class="leading-relaxed">${currentQuestion.hint}</span>
+                    <div class="flex-grow flex flex-col justify-center w-full max-w-3xl pb-6">
+                        <div class="w-full bg-white p-5 md:p-8 rounded-2xl shadow-lg border-2 border-slate-200 leading-snug flex flex-col justify-start z-10 ${animatingOut ? 'fly-out' : 'fade-in'} ${shakeClass}">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-${theme}-600 font-bold text-lg md:text-xl">البطاقة ${toArabicNum(currentIndex + 1)}</span>
+                                <button onclick="App.toggleHint('${sectionId}', ${currentIndex})" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-lg md:text-xl font-bold transition-all active:scale-95 text-amber-500 md:hover:bg-amber-50">💡 تلميح</button>
+                            </div>
+                            <div class="min-h-[8rem] md:min-h-[10rem] flex flex-col items-center justify-center w-full">
+                                <span class="block mb-4 text-slate-500 text-sm md:text-base font-medium text-center">إلى أي صندوق ينتمي هذا العَلَم؟</span>
+                                <h3 class="text-3xl md:text-4xl font-bold leading-snug text-slate-800 text-center">«${currentQuestion.text}»</h3>
+                            </div>
+                            
+                            <div class="${showHint ? `block w-full ${hintFadeClass}` : 'hidden'} mt-4">
+                                <div class="bg-amber-50 text-amber-900 p-4 rounded-xl text-xl font-medium border border-amber-200 flex gap-2 items-start text-right">
+                                    <span class="text-amber-500 font-semibold mt-1 shrink-0">💡</span>
+                                    <span class="leading-relaxed">${currentQuestion.hint}</span>
+                                </div>
+                            </div>
+                            
+                            <div class="${status === 'incorrect' ? 'block w-full smooth-expand' : 'hidden'} mt-5">
+                                <div class="p-4 bg-rose-50 border border-rose-200 rounded-xl text-center text-rose-700 text-lg md:text-xl font-bold shadow-sm">⚠️ ${currentQuestion.explanation}</div>
                             </div>
                         </div>
-                        
-                        <div class="${status === 'incorrect' ? 'block w-full smooth-expand' : 'hidden'} mt-5">
-                            <div class="p-4 bg-rose-50 border border-rose-200 rounded-xl text-center text-rose-700 text-lg md:text-xl font-bold shadow-sm">⚠️ ${currentQuestion.explanation}</div>
-                        </div>
-                        
+                    </div>`;
+
+                    // المنطقة السفلية: حاوية الأزرار الثابتة
+                    html += `
+                    <div class="w-full max-w-3xl shrink-0 z-0">
                         ${actionButtonsHTML}
                     </div>`;
+
                 } else { 
-                    html += `<div class="text-3xl md:text-4xl font-bold text-emerald-500 flex flex-col items-center gap-4 py-6"><span class="text-6xl">🎉</span><span>اكتملت الصناديق بنجاح!</span></div>`; 
+                    html += `
+                    <div class="flex-grow flex items-center justify-center w-full">
+                        <div class="text-3xl md:text-4xl font-bold text-emerald-500 flex flex-col items-center gap-4 py-6">
+                            <span class="text-6xl">🎉</span><span>اكتملت الصناديق بنجاح!</span>
+                        </div>
+                    </div>`; 
                 }
                 
-                html += `</div>`; // إغلاق حاوية البطاقة العلوية
+                html += `</div>`;
                 
                 // عرض الصناديق السفلية
                 html += `<div class="w-full grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">${boxesHTML}</div></div>`;
@@ -654,19 +683,18 @@
                     
                     state.status = 'correct'; 
                     state.animatingOut = true; 
-                    this.updateUI(); // تشغيل حركة خروج البطاقة (fly-out)
+                    this.updateUI(); 
                     
-                    // الانتظار حتى تنتهي حركة الطيران، ثم إضافة العنصر للصندوق وتحديث الشاشة
                     setTimeout(() => { 
                         state.placedItems[categoryId].push(currentQ); 
                         state.currentIndex++; 
                         state.status = 'idle'; 
                         state.animatingOut = false; 
-                        this.updateUI(); // إظهار البطاقة الجديدة والكلمة في الصندوق بدون وميض
+                        this.updateUI(); 
                     }, 400); 
                 } else { 
                     state.status = 'incorrect'; 
-                    this.updateUI(); // تشغيل حركة الاهتزاز وعرض الخطأ
+                    this.updateUI(); 
                 }
             },
             handleErrorWordClick(sectionId, qIndex, wIndex) {
@@ -714,3 +742,6 @@
     </script>
 </body>
 </html>
+
+
+```
