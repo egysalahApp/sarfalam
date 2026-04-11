@@ -426,6 +426,7 @@
                 html += `<div class="relative w-full min-h-[32rem] md:min-h-[34rem] bg-slate-50 rounded-3xl border-2 border-dashed border-slate-300 flex flex-col items-center justify-start pt-8 md:pt-12 p-4 md:p-6">`;
                 
                 if (!isComplete) {
+                    const hintFadeClass = state.questions[currentIndex].hintAnimate ? 'smooth-expand' : '';
                     
                     // الأزرار المدمجة
                     let actionButtonsHTML = `<div class="mt-6 border-t-2 border-slate-100 pt-6">
@@ -454,7 +455,7 @@
                         </div>
                         
                         <!-- منطقة التمدد (التلميح والخطأ) تنزلق لأسفل وتدفع الأزرار -->
-                        <div class="${state.questions[currentIndex].showHint ? `block w-full smooth-expand` : 'hidden'} mt-4">
+                        <div class="${state.questions[currentIndex].showHint ? `block w-full ${hintFadeClass}` : 'hidden'} mt-4">
                             <div class="bg-amber-50 text-amber-900 p-4 rounded-xl text-xl font-medium border border-amber-200 flex gap-2 items-start text-right">
                                 <span class="text-amber-500 font-semibold mt-1 shrink-0">💡</span>
                                 <span class="leading-relaxed">${state.questions[currentIndex].originalQuestion.hint}</span>
@@ -628,7 +629,7 @@
                         </div>
                         
                         <!-- منطقة التمدد (التلميح والخطأ) -->
-                        <div class="${showHint ? `block w-full smooth-expand` : 'hidden'} mt-4">
+                        <div class="${showHint ? `block w-full ${hintFadeClass}` : 'hidden'} mt-4">
                             <div class="bg-amber-50 text-amber-900 p-4 rounded-xl text-xl font-medium border border-amber-200 flex gap-2 items-start text-right">
                                 <span class="text-amber-500 font-semibold mt-1 shrink-0">💡</span>
                                 <span class="leading-relaxed">${currentQuestion.hint}</span>
