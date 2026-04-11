@@ -402,7 +402,7 @@
                 let ringClass = answered ? (isSelectedCorrect ? 'ring-2 ring-emerald-400' : 'ring-2 ring-rose-400') : '';
                 let optionsHTML = '';
                 options.forEach((opt, optIdx) => {
-                    let btnClass = `w-full p-4 md:p-5 rounded-xl border-2 transition-all font-semibold text-xl md:text-2xl flex items-center gap-3 justify-start `;
+                    let btnClass = `w-full p-4 md:p-5 rounded-xl border-2 transition-all font-semibold text-xl md:text-2xl flex items-center gap-3 justify-start min-h-[4.5rem] md:min-h-[5rem] `;
                     if (!answered) { btnClass += `border-slate-200 bg-white text-slate-600 active:scale-95 md:hover:bg-slate-50 cursor-pointer`; } else {
                         if (opt.isCorrect) btnClass += "bg-emerald-50 border-emerald-500 text-emerald-800 shadow-sm";
                         else if (selectedOption === opt) btnClass += "bg-rose-50 border-rose-500 text-rose-800 shadow-sm";
@@ -422,12 +422,12 @@
                 let html = '<div class="flex flex-col items-center w-full gap-6">';
                 if (sectionData.description) { html += `<div class="text-center w-full"><p class="text-lg md:text-xl text-${theme}-800 font-semibold bg-${theme}-50/60 p-4 md:p-5 rounded-2xl shadow-sm">${sectionData.description}</p></div>`; }
                 
-                // الحاوية الكلية: خندق صلب. استخدام justify-start و pt-8 لمنع القفزة لأعلى عند التمدد.
+                // الحاوية الكلية: خندق صلب يمتص كل التغيرات
                 html += `<div class="relative w-full min-h-[32rem] md:min-h-[34rem] bg-slate-50 rounded-3xl border-2 border-dashed border-slate-300 flex flex-col items-center justify-start pt-8 md:pt-12 p-4 md:p-6">`;
                 
                 if (!isComplete) {
                     
-                    // الأزرار يتم تكوينها هنا لدمجها في البطاقة
+                    // الأزرار المدمجة
                     let actionButtonsHTML = `<div class="mt-6 border-t-2 border-slate-100 pt-6">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">`;
                     state.questions[currentIndex].options.forEach((opt, idx) => {
@@ -438,7 +438,7 @@
                     });
                     actionButtonsHTML += `</div></div>`;
 
-                    // البطاقة البيضاء المدمجة
+                    // البطاقة البيضاء (شاشة العرض + لوحة التحكم)
                     html += `
                     <div class="w-full max-w-2xl bg-white p-5 md:p-8 rounded-2xl shadow-lg border-2 border-slate-200 leading-snug flex flex-col z-10 ${animatingOut ? 'fly-out' : 'fade-in'} ${status === 'incorrect' ? 'shake' : ''}">
                         
@@ -465,7 +465,7 @@
                             <div class="p-4 bg-rose-50 border border-rose-200 rounded-xl text-center text-rose-700 text-lg md:text-xl font-bold shadow-sm">⚠️ إجابة خاطئة! ${state.questions[currentIndex].originalQuestion.explanation}</div>
                         </div>
                         
-                        <!-- الأزرار المدمجة -->
+                        <!-- الأزرار -->
                         ${actionButtonsHTML}
 
                     </div>`;
@@ -505,7 +505,7 @@
                 let optionsHTML = ''; if (step >= 2) {
                     optionsHTML += `<div class="mt-8 mb-4 text-center font-bold text-xl text-slate-600">اختر التصويب الصحيح:</div><div class="grid gap-3 grid-cols-1 md:grid-cols-3 w-full">`;
                     qState.options.forEach((opt, optIdx) => {
-                        let btnClass = `p-4 rounded-xl border-2 transition-all font-semibold text-xl md:text-2xl flex items-center justify-center gap-2 `;
+                        let btnClass = `p-4 rounded-xl border-2 transition-all font-semibold text-xl md:text-2xl flex items-center justify-center gap-2 min-h-[4.5rem] md:min-h-[5rem] `;
                         if (step === 2) { btnClass += `border-slate-200 bg-white text-slate-600 md:hover:bg-slate-50 active:scale-95 cursor-pointer`; } else { if (opt.isCorrect) btnClass += "bg-emerald-50 border-emerald-500 text-emerald-800 shadow-sm"; else if (selectedOption === opt) btnClass += "bg-rose-50 border-rose-500 text-rose-800 shadow-sm"; else btnClass += "bg-slate-50 border-slate-100 text-slate-400 opacity-50"; btnClass += " cursor-default"; }
                         optionsHTML += `<button ${step === 3 ? 'disabled' : ''} onclick="App.handleErrorOptionClick('${sectionId}', ${idx}, ${optIdx})" class="${btnClass}">${opt.text}${step === 3 && opt.isCorrect ? ICONS.checkCircle : ''}${step === 3 && selectedOption === opt && !opt.isCorrect ? ICONS.xCircle : ''}</button>`;
                     });
